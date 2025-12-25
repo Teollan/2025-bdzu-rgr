@@ -1,5 +1,5 @@
-import 'package:rgr/rgr.dart' as rgr;
+import 'package:rgr/app/app.dart';
 
 void main(List<String> arguments) {
-  rgr.app();
+  App.run();
 }

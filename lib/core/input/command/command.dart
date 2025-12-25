@@ -1,48 +1,71 @@
-import 'package:collection/collection.dart';
+import 'package:args/command_runner.dart';
 import 'package:rgr/core/controller/controller.dart';
+import 'package:rgr/core/input/argument/argument.dart';
+import 'package:rgr/core/input/argument/argument_schema.dart';
 
-abstract class Command {
-  Future<void> execute(String rawArgs);
-}
-
-class Action extends Command {
-  final Controller controller;
-
-  Action(this.controller);
-
-  @override
-  Future<void> execute(String rawArgs) async {
-    String args = rawArgs.trim();
-
-    await controller.invoke(args);
-  }
-}
-
-class Fork extends Command {
-  final Map<String, Command> commands;
-
-  Fork(this.commands);
+class LeafCommand<T> extends Command<void> {
+  final String _name;
+  final String _description;
+  final Controller<T> controller;
+  final ArgumentSchema<T> argumentSchema;
 
   @override
-  Future<void> execute(String rawArgs) async {
-    final args = rawArgs.trim();
+  String get name => _name;
 
-    final nextCommandKey = commands.keys.firstWhereOrNull(
-      (commandKey) => args.startsWith(commandKey),
-    );
+  @override
+  String get description => _description;
 
-    final nextCommand = commands[nextCommandKey];
+  LeafCommand({
+    required String name,
+    required String description,
+    required this.controller,
+    required this.argumentSchema,
+  }) : _name = name,
+       _description = description {
+    for (final entry in argumentSchema.arguments.entries) {
+      final name = entry.key;
+      final argument = entry.value;
 
-    if (nextCommandKey == null || nextCommand == null) {
-      throw Error();
+      addArgument(name, argument);
     }
-
-    final nextCommandArgs =
-        RegExp(
-          '^${RegExp.escape(nextCommandKey)}(.*)\$',
-        ).matchAsPrefix(args)?.group(1) ??
-        '';
-
-    await nextCommand.execute(nextCommandArgs);
   }
+
+  @override
+  Future<void> run() async {
+    final parsedArgs = argumentSchema.parse(argResults!);
+
+    await controller.run(parsedArgs);
+  }
+
+  void addArgument(String name, Argument<dynamic> argument) {
+    if (argument is Argument<bool>) {
+      argParser.addFlag(
+        name,
+        help: argument.help,
+        defaultsTo: argument.defaultValue ?? false,
+      );
+    } else {
+      argParser.addOption(
+        name,
+        help: argument.help,
+        defaultsTo: argument.defaultValue?.toString(),
+        mandatory: argument.isRequired,
+      );
+    }
+  }
+}
+
+class BranchCommand extends Command<void> {
+  final String _name;
+  final String _description;
+
+  @override
+  String get name => _name;
+
+  @override
+  String get description => _description;
+
+  BranchCommand({required String name, required String description})
+    : _name = name,
+      _description = description;
 }

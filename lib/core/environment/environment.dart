@@ -5,7 +5,7 @@ abstract class Environment {
 
   static final dbHost = Environment._env['DB_HOST'] ?? 'localhost';
   static final dbPort = int.parse(Environment._env['DB_PORT'] ?? '5432');
-  static final dbUser = Environment._env['DB_USER'] ?? 'postgres';
+  static final dbUsername = Environment._env['DB_USERNAME'] ?? 'postgres';
   static final dbPassword = Environment._env['DB_PASSWORD'] ?? 'postgres';
   static final dbName = Environment._env['DB_NAME'] ?? 'postgres';
 }

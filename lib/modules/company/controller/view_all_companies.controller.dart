@@ -1,12 +1,9 @@
 import 'package:rgr/core/controller/controller.dart';
-import 'package:rgr/core/input/argument/argument.dart';
 import 'package:rgr/modules/company/model/company.repository.dart';
 import 'package:rgr/modules/company/view/company.view.dart';
 
-class ViewAllCompaniesController extends Controller {
+class ViewAllCompaniesController extends Controller<void> {
   final companyRepository = CompanyRepository();
-
-  ViewAllCompaniesController() : super(Arguments({}));
 
   @override
   Future<void> run(_) async {
