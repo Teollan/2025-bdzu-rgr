@@ -8,17 +8,20 @@ class Args {
   Args({required this.id});
 }
 
-class ViewCompanyByIdController extends Controller<Args> {
+class DeleteCompanyController extends Controller<Args> {
   final companyRepository = CompanyRepository();
 
   @override
   Future<void> run(args) async {
-    final company = await companyRepository.findCompany(args.id);
+    final existing = await companyRepository.findCompany(args.id);
 
-    if (company == null) {
+    if (existing == null) {
       throw Exception('Company with id ${args.id} not found');
     }
 
+    final company = await companyRepository.deleteCompany(args.id);
+
+    print('Company deleted successfully!');
     CompanyView.showCompany(company);
   }
 }
