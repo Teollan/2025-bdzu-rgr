@@ -2,13 +2,13 @@ import 'package:rgr/core/controller/controller.dart';
 import 'package:rgr/modules/company/model/company.repository.dart';
 import 'package:rgr/modules/company/view/company.view.dart';
 
-class Args {
+class CreateCompanyControllerArgs {
   final String name;
 
-  Args({required this.name});
+  CreateCompanyControllerArgs({required this.name});
 }
 
-class CreateCompanyController extends Controller<Args> {
+class CreateCompanyController extends Controller<CreateCompanyControllerArgs> {
   final companyRepository = CompanyRepository();
 
   @override

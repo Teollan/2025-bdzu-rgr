@@ -1,52 +1,56 @@
 import 'package:args/command_runner.dart';
 import 'package:rgr/core/controller/controller.dart';
 import 'package:rgr/core/input/argument/argument.dart';
-import 'package:rgr/core/input/argument/argument_schema.dart';
 
-class LeafCommand<T> extends Command<void> {
-  final String _name;
-  final String _description;
-  final Controller<T> controller;
-  final ArgumentSchema<T> argumentSchema;
+abstract class LeafCommand<T> extends Command<void> {
+  final List<Argument<dynamic>> arguments = [];
 
   @override
-  String get name => _name;
+  String get name;
 
   @override
-  String get description => _description;
+  String get description;
 
-  LeafCommand({
-    required String name,
-    required String description,
-    required this.controller,
-    required this.argumentSchema,
-  }) : _name = name,
-       _description = description {
-    for (final entry in argumentSchema.arguments.entries) {
-      final name = entry.key;
-      final argument = entry.value;
-
-      addArgument(name, argument);
-    }
-  }
+  Controller<T> get controller;
 
   @override
   Future<void> run() async {
-    final parsedArgs = argumentSchema.parse(argResults!);
+    final parsed = parseArguments();
+    final args = mapArguments(parsed);
 
-    await controller.run(parsedArgs);
+    await controller.run(args);
   }
 
-  void addArgument(String name, Argument<dynamic> argument) {
+  T mapArguments(Map<String, dynamic> args);
+
+  Map<String, dynamic> parseArguments() {
+    final parsed = <String, dynamic>{};
+
+    for (final argument in arguments) {
+      final input = argument is Argument<bool>
+          ? argResults!.flag(argument.name).toString()
+          : argResults!.option(argument.name);
+
+      final value = argument.parseAndValidate(input);
+
+      parsed[argument.name] = value;
+    }
+
+    return parsed;
+  }
+
+  void addArgument(Argument<dynamic> argument) {
+    arguments.add(argument);
+
     if (argument is Argument<bool>) {
       argParser.addFlag(
-        name,
+        argument.name,
         help: argument.help,
         defaultsTo: argument.defaultValue ?? false,
       );
     } else {
       argParser.addOption(
-        name,
+        argument.name,
         help: argument.help,
         defaultsTo: argument.defaultValue?.toString(),
         mandatory: argument.isRequired,
@@ -55,17 +59,10 @@ class LeafCommand<T> extends Command<void> {
   }
 }
 
-class BranchCommand extends Command<void> {
-  final String _name;
-  final String _description;
+abstract class BranchCommand extends Command<void> {
+  @override
+  String get name;
 
   @override
-  String get name => _name;
-
-  @override
-  String get description => _description;
-
-  BranchCommand({required String name, required String description})
-    : _name = name,
-      _description = description;
+  String get description;
 }

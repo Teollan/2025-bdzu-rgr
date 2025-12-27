@@ -1,12 +1,12 @@
 import 'package:rgr/core/repository/repository.dart';
-import 'package:rgr/modules/company/model/company.model.dart';
+import 'package:rgr/modules/company/model/company.entity.dart';
 
 class CompanyRepository extends Repository {
-  Company toModel(Map<String, dynamic> row) {
+  Company toEntity(Map<String, dynamic> row) {
     return Company(id: row['id'] as int, name: row['name'] as String);
   }
 
-  Future<Company?> findCompany(int id) async {
+  Future<Company?> findCompanyById(int id) async {
     final result = await db.query(
       '''
       SELECT *
@@ -20,13 +20,33 @@ class CompanyRepository extends Repository {
       return null;
     }
 
-    return toModel(result.first);
+    return toEntity(result.first);
   }
 
-  Future<List<Company>> findAllCompanies() async {
-    final result = await db.query('SELECT * FROM companies;');
+  Future<List<Company>> findCompaniesByName(String name) async {
+    final result = await db.query(
+      '''
+      SELECT *
+      FROM companies
+      WHERE name ILIKE @name;
+      ''',
+      parameters: {'name': '%$name%'},
+    );
 
-    return result.map(toModel).toList();
+    return result.map(toEntity).toList();
+  }
+
+  Future<List<Company>> getAllCompanies({int? limit, int? offset}) async {
+    final result = await db.query(
+      '''
+      SELECT * FROM companies
+      LIMIT @limit
+      OFFSET @offset;
+      ''',
+      parameters: {'limit': limit, 'offset': offset},
+    );
+
+    return result.map(toEntity).toList();
   }
 
   Future<Company> createCompany({required String name}) async {
@@ -39,7 +59,7 @@ class CompanyRepository extends Repository {
       parameters: {'name': name},
     );
 
-    return toModel(result.first);
+    return toEntity(result.first);
   }
 
   Future<Company> updateCompany(int id, {String? name}) async {
@@ -53,7 +73,7 @@ class CompanyRepository extends Repository {
       parameters: {'id': id, 'name': name},
     );
 
-    return toModel(result.first);
+    return toEntity(result.first);
   }
 
   Future<Company> deleteCompany(int id) async {
@@ -66,6 +86,6 @@ class CompanyRepository extends Repository {
       parameters: {'id': id},
     );
 
-    return toModel(result.first);
+    return toEntity(result.first);
   }
 }

@@ -2,19 +2,19 @@ import 'package:rgr/core/controller/controller.dart';
 import 'package:rgr/modules/company/model/company.repository.dart';
 import 'package:rgr/modules/company/view/company.view.dart';
 
-class Args {
+class UpdateCompanyControllerArgs {
   final int id;
   final String name;
 
-  Args({required this.id, required this.name});
+  UpdateCompanyControllerArgs({required this.id, required this.name});
 }
 
-class UpdateCompanyController extends Controller<Args> {
+class UpdateCompanyController extends Controller<UpdateCompanyControllerArgs> {
   final companyRepository = CompanyRepository();
 
   @override
   Future<void> run(args) async {
-    final existing = await companyRepository.findCompany(args.id);
+    final existing = await companyRepository.findCompanyById(args.id);
 
     if (existing == null) {
       throw Exception('Company with id ${args.id} not found');

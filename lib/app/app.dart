@@ -1,14 +1,13 @@
 import 'dart:io';
 
-import 'package:args/command_runner.dart';
+import 'package:cli_repl/cli_repl.dart';
+import 'package:rgr/app/app_command_runner.dart';
 import 'package:rgr/core/database/database.dart';
 import 'package:rgr/core/database/postgres.dart';
 import 'package:rgr/core/environment/environment.dart';
-import 'package:rgr/modules/company/view/commands/index.dart';
 
 class App {
-  static bool isRunning = false;
-  static CommandRunner<void> runner = App.buildRunner();
+  static AppCommandRunner runner = AppCommandRunner();
 
   static Future<void> init() async {
     await PostgresDatabase().connect(
@@ -27,52 +26,26 @@ class App {
   static Future<void> run() async {
     await init();
 
-    isRunning = true;
+    final repl = Repl(prompt: '> ');
 
-    while (isRunning) {
-      final command = readCommand();
+    await for (final line in repl.runAsync()) {
+      final trimmed = line.trim();
 
-      if (command != null) {
-        await runCommand(command);
+      if (trimmed.isEmpty) {
+        continue;
       }
+
+      await runCommand(trimmed);
+
+      print('finished');
     }
-  }
-
-  static String? readCommand() {
-    stdout.write('> ');
-
-    final rawInput = stdin.readLineSync();
-
-    if (rawInput == null) {
-      return null;
-    }
-
-    final trimmedInput = rawInput.trim();
-
-    if (trimmedInput.isEmpty) {
-      return null;
-    }
-
-    return trimmedInput;
   }
 
   static Future<void> runCommand(String command) async {
     try {
-      await runner.run(command.split(' '));
+      await runner.run(command);
     } catch (e) {
       stdout.writeln('An unexpected error occurred: $e');
     }
-  }
-
-  static void kill() {
-    isRunning = false;
-  }
-
-  static CommandRunner<void> buildRunner() {
-    final runner = CommandRunner<void>('>', 'A command-line CRM application.');
-
-    runner.addCommand(buildCompaniesCommands());
-
-    return runner;
   }
 }

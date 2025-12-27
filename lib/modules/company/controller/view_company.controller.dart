@@ -2,23 +2,24 @@ import 'package:rgr/core/controller/controller.dart';
 import 'package:rgr/modules/company/model/company.repository.dart';
 import 'package:rgr/modules/company/view/company.view.dart';
 
-class Args {
+class ViewCompanyControllerArgs {
   final int id;
 
-  Args({required this.id});
+  ViewCompanyControllerArgs({required this.id});
 }
 
-class ViewCompanyController extends Controller<Args> {
+class ViewCompanyController extends Controller<ViewCompanyControllerArgs> {
   final companyRepository = CompanyRepository();
 
   @override
   Future<void> run(args) async {
-    final company = await companyRepository.findCompany(args.id);
+    final company = await companyRepository.findCompanyById(args.id);
 
     if (company == null) {
       throw Exception('Company with id ${args.id} not found');
     }
 
+    print('Company found:');
     CompanyView.showCompany(company);
   }
 }

@@ -9,78 +9,78 @@ class Argument<T> {
   final Parser<T> parser;
   final T? defaultValue;
   final bool isRequired;
-  final String? name;
+  final String name;
   final String? help;
 
   Argument({
+    required this.name,
     required this.parser,
     this.defaultValue,
     this.isRequired = false,
-    this.name,
     this.help,
   });
 
   static Argument<String> string({
+    required String name,
     String? defaultValue,
     bool isRequired = false,
-    String? name,
     String? help,
   }) => Argument(
+    name: name,
     parser: StringParser(),
     defaultValue: defaultValue,
     isRequired: isRequired,
-    name: name,
     help: help,
   );
 
   static Argument<int> integer({
+    required String name,
     int? defaultValue,
     bool isRequired = false,
-    String? name,
     String? help,
   }) => Argument(
+    name: name,
     parser: IntParser(),
     defaultValue: defaultValue,
     isRequired: isRequired,
-    name: name,
     help: help,
   );
 
   static Argument<double> floating({
+    required String name,
     double? defaultValue,
     bool isRequired = false,
-    String? name,
     String? help,
   }) => Argument(
+    name: name,
     parser: DoubleParser(),
     defaultValue: defaultValue,
     isRequired: isRequired,
-    name: name,
     help: help,
   );
 
   static Argument<DateTime> dateTime({
+    required String name,
     DateTime? defaultValue,
     bool isRequired = false,
-    String? name,
     String? help,
   }) => Argument(
+    name: name,
     parser: DateTimeParser(),
     defaultValue: defaultValue,
     isRequired: isRequired,
-    name: name,
     help: help,
   );
 
   static Argument<bool> flag({
+    required String name,
     bool defaultValue = false,
-    String? name,
     String? help,
   }) => Argument(
+    name: name,
     parser: BoolParser(),
     defaultValue: defaultValue,
     isRequired: false,
-    name: name,
     help: help,
   );
 

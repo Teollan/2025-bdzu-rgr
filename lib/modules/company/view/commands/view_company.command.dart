@@ -1,18 +1,32 @@
+import 'package:rgr/core/controller/controller.dart';
 import 'package:rgr/core/input/argument/argument.dart';
-import 'package:rgr/core/input/argument/argument_schema.dart';
 import 'package:rgr/core/input/command/command.dart';
 import 'package:rgr/modules/company/controller/view_company.controller.dart';
 
-LeafCommand<Args> buildViewCompanyCommand() {
-  return LeafCommand(
-    name: 'view',
-    description: 'View company by ID',
-    controller: ViewCompanyController(),
-    argumentSchema: ArgumentSchema({
-      'id': Argument.integer(
+class ViewCompanyCommand extends LeafCommand<ViewCompanyControllerArgs> {
+  @override
+  String get name => 'view';
+
+  @override
+  String get description => 'View company by ID';
+
+  @override
+  Controller<ViewCompanyControllerArgs> get controller {
+    return ViewCompanyController();
+  }
+
+  ViewCompanyCommand() {
+    addArgument(
+      Argument.integer(
+        name: 'id',
         isRequired: true,
         help: 'The ID of the company to view',
       ),
-    }, (parsed) => Args(id: parsed['id'] as int)),
-  );
+    );
+  }
+
+  @override
+  ViewCompanyControllerArgs mapArguments(Map<String, dynamic> args) {
+    return ViewCompanyControllerArgs(id: args['id'] as int);
+  }
 }
