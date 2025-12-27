@@ -14,11 +14,10 @@ class DatabaseConnectionParameters {
   });
 }
 
+typedef Rows = List<Map<String, dynamic>>;
+
 abstract class Database {
   void connect(DatabaseConnectionParameters parameters);
 
-  Future<List<Map<String, dynamic>>> query(
-    String sql, {
-    Map<String, dynamic> parameters,
-  });
+  Future<Rows> query(String sql, {Map<String, dynamic> parameters});
 }

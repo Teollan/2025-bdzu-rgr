@@ -23,7 +23,11 @@ class Table<T> {
 
     buffer.writeln(border);
 
-    for (final row in rows) {
+    buffer.writeln(buildRow(columnNames, columnWidths));
+
+    buffer.writeln(border);
+
+    for (final row in rows.skip(1)) {
       buffer.writeln(buildRow(row, columnWidths));
     }
 

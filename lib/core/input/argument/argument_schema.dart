@@ -7,6 +7,10 @@ class ArgumentSchema<T> {
 
   ArgumentSchema(this.arguments, this.mapFn);
 
+  static ArgumentSchema<void> empty() {
+    return ArgumentSchema({}, (_) => {});
+  }
+
   T parse(ArgResults values) {
     final parsed = <String, dynamic>{};
 

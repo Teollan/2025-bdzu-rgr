@@ -1,13 +1,32 @@
 import 'dart:io';
 
 import 'package:args/command_runner.dart';
+import 'package:rgr/core/database/database.dart';
+import 'package:rgr/core/database/postgres.dart';
+import 'package:rgr/core/environment/environment.dart';
 import 'package:rgr/modules/company/view/commands/index.dart';
 
 class App {
   static bool isRunning = false;
   static CommandRunner<void> runner = App.buildRunner();
 
-  static void run() async {
+  static Future<void> init() async {
+    await PostgresDatabase().connect(
+      DatabaseConnectionParameters(
+        host: Environment.dbHost,
+        port: Environment.dbPort,
+        database: Environment.dbName,
+        username: Environment.dbUsername,
+        password: Environment.dbPassword,
+      ),
+    );
+
+    stdout.writeln('Database initialized.');
+  }
+
+  static Future<void> run() async {
+    await init();
+
     isRunning = true;
 
     while (isRunning) {
@@ -50,12 +69,9 @@ class App {
   }
 
   static CommandRunner<void> buildRunner() {
-    final runner = CommandRunner<void>(
-      'run',
-      'A command-line application for managing resources.',
-    );
+    final runner = CommandRunner<void>('>', 'A command-line CRM application.');
 
-    runner.addCommand(buildCompanyCommands());
+    runner.addCommand(buildCompaniesCommands());
 
     return runner;
   }

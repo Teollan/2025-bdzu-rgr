@@ -25,15 +25,15 @@ class PostgresDatabase extends Database {
   }
 
   @override
-  Future<List<Map<String, dynamic>>> query(
-    String sql, {
-    Map<String, dynamic>? parameters,
-  }) async {
+  Future<Rows> query(String sql, {Map<String, dynamic>? parameters}) async {
     if (connection == null) {
       throw Exception('Database not connected');
     }
 
-    final result = await connection!.execute(sql, parameters: parameters);
+    final result = await connection!.execute(
+      Sql.named(sql),
+      parameters: parameters,
+    );
 
     return result.map((row) => row.toColumnMap()).toList(growable: false);
   }
