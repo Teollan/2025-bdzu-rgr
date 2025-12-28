@@ -1,4 +1,5 @@
 import 'package:args/command_runner.dart';
+import 'package:rgr/modules/app/view/commands/quit.command.dart';
 import 'package:rgr/modules/company/view/commands/companies.command.dart';
 import 'package:rgr/modules/customer/view/commands/customers.command.dart';
 import 'package:rgr/modules/lead/view/commands/leads.command.dart';
@@ -8,12 +9,13 @@ class AppCommandRunner {
   late final CommandRunner<void> runner;
 
   AppCommandRunner() {
-    runner = CommandRunner<void>('>', 'A command-line CRM application.');
+    runner = CommandRunner<void>('', 'A command-line CRM application.');
 
     runner.addCommand(CompaniesCommand());
     runner.addCommand(SalesManagersCommand());
     runner.addCommand(CustomersCommand());
     runner.addCommand(LeadsCommand());
+    runner.addCommand(QuitCommand());
   }
 
   Future<void> run(String command) async {

@@ -8,6 +8,7 @@ import 'package:rgr/core/environment/environment.dart';
 
 class App {
   static AppCommandRunner runner = AppCommandRunner();
+  static Repl repl = Repl(prompt: '> ');
 
   static Future<void> init() async {
     await PostgresDatabase().connect(
@@ -26,8 +27,6 @@ class App {
   static Future<void> run() async {
     await init();
 
-    final repl = Repl(prompt: '> ');
-
     await for (final line in repl.runAsync()) {
       final trimmed = line.trim();
 
@@ -45,5 +44,10 @@ class App {
     } catch (e) {
       stdout.writeln('An unexpected error occurred: $e');
     }
+  }
+
+  static Future<void> quit() async {
+    stdout.writeln('Exiting application. Goodbye!');
+    exit(0);
   }
 }
