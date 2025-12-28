@@ -1,5 +1,5 @@
 import 'package:rgr/core/output/table.dart';
-import 'package:rgr/modules/company/model/company.model.dart';
+import 'package:rgr/modules/company/model/company.entity.dart';
 
 class CompanyView {
   static void showCompany(Company company) {

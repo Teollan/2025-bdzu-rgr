@@ -2,15 +2,15 @@ import 'package:rgr/core/controller/controller.dart';
 import 'package:rgr/modules/company/model/company.repository.dart';
 import 'package:rgr/modules/company/view/company.view.dart';
 
-class ViewAllCompaniesControllerArgs {
+class ReadAllCompaniesControllerArgs {
   final int limit;
   final int offset;
 
-  ViewAllCompaniesControllerArgs({required this.limit, required this.offset});
+  ReadAllCompaniesControllerArgs({required this.limit, required this.offset});
 }
 
-class ViewAllCompaniesController
-    extends Controller<ViewAllCompaniesControllerArgs> {
+class ReadAllCompaniesController
+    extends Controller<ReadAllCompaniesControllerArgs> {
   final companyRepository = CompanyRepository();
 
   @override

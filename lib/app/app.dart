@@ -36,8 +36,6 @@ class App {
       }
 
       await runCommand(trimmed);
-
-      print('finished');
     }
   }
 

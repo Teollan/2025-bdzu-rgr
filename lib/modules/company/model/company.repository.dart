@@ -36,7 +36,10 @@ class CompanyRepository extends Repository {
     return result.map(toEntity).toList();
   }
 
-  Future<List<Company>> getAllCompanies({int? limit, int? offset}) async {
+  Future<List<Company>> getAllCompanies({
+    int? limit = 20,
+    int? offset = 0,
+  }) async {
     final result = await db.query(
       '''
       SELECT * FROM companies
@@ -66,7 +69,7 @@ class CompanyRepository extends Repository {
     final result = await db.query(
       '''
       UPDATE companies
-      SET name = @name
+      SET name = COALESCE(@name, name)
       WHERE id = @id
       RETURNING *;
       ''',
